@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
-import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { PaperProvider } from 'react-native-paper'
+import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from "react";
@@ -26,10 +27,10 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <PaperProvider theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
       </Stack>
-    </ThemeProvider>
+    </PaperProvider>
   );
 }
