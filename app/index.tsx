@@ -1,15 +1,24 @@
-import { Text, View } from "react-native";
+import { useState, useEffect } from 'react'
+import { router } from 'expo-router'
+import { supabase } from '@/lib/supabase'
+import { Session } from '@supabase/supabase-js'
 
-export default function Index() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
-  );
+export default function App() {
+  const [session, setSession] = useState<Session | null>(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+      if (session) {
+        router.replace("/(tabs)")
+      }
+    })
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+      if (session) {
+        router.replace("/(tabs)")
+      } else router.replace("/(tabs)")
+    })
+  }, [])
 }
