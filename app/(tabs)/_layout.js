@@ -18,36 +18,36 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({color, focused}) => {
+          tabBarIcon: ({color, focused}) => (
             <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          }
+          )
         }}
       />
       <Tabs.Screen
         name="new-ticket"
         options={{
           title: 'New Ticket',
-          tabBarIcon: ({color, focused}) => {
+          tabBarIcon: ({color, focused}) => (
             <TabBarIcon name={focused ? 'add' : 'add-outline'} color={color} />
-          }
+          )
         }}
       />
       <Tabs.Screen
         name="clients"
         options={{
           title: 'Clients',
-          tabBarIcon: ({color, focused}) => {
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          }
+          tabBarIcon: ({color, focused}) => (
+            <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
+          )
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: 'Settings',
-          tabBarIcon: ({color, focused}) => {
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          }
+          tabBarIcon: ({color, focused}) => (
+            <TabBarIcon name={focused ? 'settings' : 'settings-outline'} color={color} />
+          )
         }}
       />
     </Tabs>
