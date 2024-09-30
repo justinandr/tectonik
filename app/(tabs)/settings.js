@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 export default function SettingsScreen() {
   return (
     <View>
-      <Text>Settings Screen</Text>
+      <Text>Settings Screens</Text>
     </View>
   );
 }
