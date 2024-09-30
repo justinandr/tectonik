@@ -1,7 +1,21 @@
 import { Text, View } from 'react-native';
+import { supabase } from '../../lib/supabase'
+import { useState } from 'react';
 
 export default function HomeScreen() {
-  return (
+  
+  async function fetchData() {
+    const { data, error } = await supabase
+      .from('tickets')
+      .select('*')
+    
+    data ? console.log(data) : console.log(error)
+  }
+
+  fetchData()
+
+  
+    return (
     <View
       style={{
         flex: 1,
