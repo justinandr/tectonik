@@ -10,15 +10,15 @@ export default function App() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
       if (session) {
-        router.replace("/(tabs)")
+        router.replace("/(tabs)/")
       }
     })
 
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
       if (session) {
-        router.replace("/(tabs)")
-      } else router.replace("/(tabs)")
+        router.replace("/(tabs)/")
+      } else router.replace("/auth/")
     })
   }, [])
 }
