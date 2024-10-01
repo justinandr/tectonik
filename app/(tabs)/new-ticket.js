@@ -1,25 +1,41 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { TextInput, Button, Text, Snackbar } from 'react-native-paper';
 import { ScrollView } from 'react-native';
+import { supabase } from '@/lib/supabase'
 
 export default function NewTicketScreen() {
   // State for form inputs
-  const [title, setTitle] = useState('');
+  const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
-  const [client, setClient] = useState('');
+  const [colorCode, setColorCode] = useState('');
   
   // State for snackbar (to show confirmation message)
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
   // Function to handle form submission
-  const handleSubmit = () => {
-    if (title && description && client) {
-      console.log({
-        title,
-        description,
-        client,
-      });
+  const handleSubmit = async () => {
+    if (location && description && colorCode) {
+      const { data, error } = await supabase
+      .from('tickets')
+      .insert([
+        {
+          created_at: new Date().toISOString(),
+          location: location,
+          description: description,
+          colorCode: colorCode
+        }
+      ])
+
+      if (error) {
+        console.error('Error inserting ticket:', error);
+        setSnackbarMessage('Error creating ticket');
+      } else {
+        console.log('Ticket created:', data);
+        setSnackbarMessage('Ticket Created Successfully!');
+        resetForm();
+      }
+
       setSnackbarVisible(true); // Show success message
       resetForm();
     } else {
@@ -29,9 +45,9 @@ export default function NewTicketScreen() {
 
   // Function to reset form fields
   const resetForm = () => {
-    setTitle('');
+    setLocation('');
     setDescription('');
-    setClient('');
+    setColorCode('');
   };
 
   return (
@@ -39,9 +55,9 @@ export default function NewTicketScreen() {
       <Text variant="titleLarge">Create New Ticket</Text>
 
       <TextInput
-        label="Title"
-        value={title}
-        onChangeText={setTitle}
+        label="Location"
+        value={location}
+        onChangeText={setLocation}
         mode="outlined"
         style={styles.input}
       />
@@ -55,9 +71,9 @@ export default function NewTicketScreen() {
         style={styles.input}
       />
       <TextInput
-        label="Client"
-        value={client}
-        onChangeText={setClient}
+        label="Color Code"
+        value={colorCode}
+        onChangeText={setColorCode}
         mode="outlined"
         style={styles.input}
       />
