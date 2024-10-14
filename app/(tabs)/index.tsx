@@ -13,7 +13,8 @@ import {
   XGroup, 
   YStack, 
   useTheme,
-  ScrollView } from 'tamagui'
+  ScrollView, 
+  View} from 'tamagui'
 import { supabase } from 'utils/supabase'
 import { RefreshControl } from 'react-native';
 
@@ -37,14 +38,14 @@ export default function TabOneScreen() {
     try {
       const { data, error } = await supabase
         .from('tickets')
-        .select('*')
+        .select()
 
         setRefreshing(false)
         
         if (error) {
           throw error
         }
-        
+
         setTickets(data as Ticket[])
     }
     catch (error) {
@@ -59,7 +60,6 @@ export default function TabOneScreen() {
   function handleClick() {
     setRenderOpenTickets(!renderOpenTickets)
   }
-
 
   return (
     <ScrollView refreshControl={
