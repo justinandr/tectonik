@@ -9,16 +9,17 @@ export default function App() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
+      console.log(session)
       if (session) {
         router.replace("/(tabs)")
-      } else router.replace("/(tabs)")
+      } else router.replace("/auth")
     })
 
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
       if (session) {
         router.replace("/(tabs)")
-      } else router.replace("/(tabs)")
+      } else router.replace("/auth")
     })
   }, [])
 }

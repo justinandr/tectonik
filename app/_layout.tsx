@@ -57,13 +57,13 @@ function RootLayoutNav() {
       <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} />
       <Stack>
         <Stack.Screen
-          name="(tabs)"
+          name="auth"
           options={{
             headerShown: false,
           }}
         />
         <Stack.Screen
-          name="auth"
+          name="(tabs)"
           options={{
             headerShown: false,
           }}
