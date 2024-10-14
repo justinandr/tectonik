@@ -71,8 +71,8 @@ export default function TabOneScreen() {
           <XGroup.Item>
             <Button 
               width="50%" 
-              size="$2" 
-              color={renderOpenTickets ? "green" : "red"}
+              size="$3" 
+              bg={renderOpenTickets ? "$accentBackground" : "$background"}
               onPress={handleClick}
               disabled={renderOpenTickets}
               >
@@ -83,8 +83,8 @@ export default function TabOneScreen() {
           <XGroup.Item>
             <Button 
               width="50%" 
-              size="$2" 
-              color={renderOpenTickets ? "red" : "green"}
+              size="$3" 
+              bg={renderOpenTickets ? "$background" : "$accentBackground"}
               onPress={handleClick}
               disabled={!renderOpenTickets}
               >
