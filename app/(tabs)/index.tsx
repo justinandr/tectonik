@@ -39,13 +39,12 @@ export default function TabOneScreen() {
       const { data, error } = await supabase
         .from('tickets')
         .select()
-
-        setRefreshing(false)
         
         if (error) {
           throw error
         }
 
+        setRefreshing(false)
         setTickets(data as Ticket[])
     }
     catch (error) {
@@ -65,7 +64,7 @@ export default function TabOneScreen() {
     <ScrollView refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={fetchTickets} />
     }>
-      <YStack f={1} ai={'stretch'} gap="$8" px="$3" pt="$6" bg="$background">
+      <YStack f={1} ai={'stretch'} gap="$8" px="$3" pt="$6" pb='$15' bg="$background">
         <H2 ta={'left'}>Tickets</H2>
         <XGroup>
           <XGroup.Item>

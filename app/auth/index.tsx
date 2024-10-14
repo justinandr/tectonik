@@ -52,7 +52,7 @@ export default function Auth() {
       bg="$background"
     >
       <H2>Sign In</H2>
-      <Label htmlFor='email'>Email</Label>
+      <Label htmlFor='email' fontWeight='bold'>Email</Label>
       <Input
         id='email'
         onChangeText={(text) => setEmail(text)}
@@ -60,7 +60,7 @@ export default function Auth() {
         placeholder="email@address.com"
         autoCapitalize={'none'}
       />
-      <Label htmlFor='password'>Password</Label>
+      <Label htmlFor='password' fontWeight='bold'>Password</Label>
       <Input
         id='password'
         onChangeText={(text) => setPassword(text)}
@@ -69,7 +69,7 @@ export default function Auth() {
         placeholder="Password"
         autoCapitalize={'none'}
       />
-      <Button onPress={() => signInWithEmail()} >Sign In</Button>
+      <Button mt='$5' onPress={() => signInWithEmail()} >Sign In</Button>
       <Button onPress={() => signUpWithEmail()} >Sign Up</Button>
     </Form>
   )
