@@ -17,20 +17,31 @@ import {
   View} from 'tamagui'
 import { supabase } from 'utils/supabase'
 import { RefreshControl } from 'react-native';
+import { themes } from '@tamagui/config/v3';
 
 type Ticket = {
-  id: number;
+  id: string;
+  user_id: string;
   created_at: string;
   color_code: string;
   status: string;
-  location: string;
+  title: string;
+  location_name: string;
+  location_id: string;
   description: string;
+}
+
+type Location = {
+  id: string;
+  name: string;
+  address: string;
 }
 
 export default function TabOneScreen() {
 
   const theme = useTheme()
   const [tickets, setTickets] = useState<Ticket[]>([])
+  const [locations, setLocations] = useState<Location[]>([])
   const [refreshing, setRefreshing] = useState(false)
   const [renderOpenTickets, setRenderOpenTickets] = useState(true)
 
@@ -43,7 +54,6 @@ export default function TabOneScreen() {
         if (error) {
           throw error
         }
-
         setRefreshing(false)
         setTickets(data as Ticket[])
     }
@@ -64,14 +74,14 @@ export default function TabOneScreen() {
     <ScrollView refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={fetchTickets} />
     }>
-      <YStack f={1} ai={'stretch'} gap="$8" px="$3" pt="$6" pb='$15' bg="$background">
+      <YStack f={1} ai={'stretch'} gap="$8" px="$3" pt="$6" pb='$zIndex.4' bg="$background">
         <H2 ta={'left'}>Tickets</H2>
         <XGroup>
           <XGroup.Item>
             <Button 
               width="50%" 
               size="$3" 
-              bg={renderOpenTickets ? "$accentBackground" : "$background"}
+              bg={renderOpenTickets ? '$accentBackground' : "$background"}
               onPress={handleClick}
               disabled={renderOpenTickets}
               >
@@ -98,7 +108,7 @@ export default function TabOneScreen() {
                 <Card key={ticket.id} elevate bg='$accentBackground'>
                   <Card.Header>
                     <H3>
-                      {ticket.location}
+                      {ticket.location_name}
                       {ticket.color_code === 'red' && ticket.status === 'open' ? 
                       <CircleAlert px='$6' size={20} color='$red10' /> 
                       : null}
@@ -113,7 +123,7 @@ export default function TabOneScreen() {
                 <Card key={ticket.id} elevate bg='$accentBackground'>
                   <Card.Header>
                     <H3>
-                      {ticket.location}
+                      {ticket.location_name}
                     </H3>
                     <Paragraph>{ticket.description}</Paragraph>
                   </Card.Header>

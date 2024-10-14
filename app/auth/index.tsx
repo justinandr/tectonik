@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Alert, StyleSheet, View, AppState } from 'react-native'
 import { supabase } from 'utils/supabase'
-import { Button, Input, Form, Label, H2 } from 'tamagui'
+import { Button, Input, Form, Label, H2, ScrollView, H1, YStack } from 'tamagui'
 
 AppState.addEventListener('change', (state) => {
   if (state === 'active') {
@@ -43,34 +43,36 @@ export default function Auth() {
   }
 
   return (
-    <Form
-      f={1} 
-      ai={'stretch'} 
-      gap="$2" 
-      px="$6" 
-      pt="$20" 
-      bg="$background"
-    >
-      <H2>Sign In</H2>
-      <Label htmlFor='email' fontWeight='bold'>Email</Label>
-      <Input
-        id='email'
-        onChangeText={(text) => setEmail(text)}
-        value={email}
-        placeholder="email@address.com"
-        autoCapitalize={'none'}
-      />
-      <Label htmlFor='password' fontWeight='bold'>Password</Label>
-      <Input
-        id='password'
-        onChangeText={(text) => setPassword(text)}
-        value={password}
-        secureTextEntry={true}
-        placeholder="Password"
-        autoCapitalize={'none'}
-      />
-      <Button mt='$5' onPress={() => signInWithEmail()} >Sign In</Button>
-      <Button onPress={() => signUpWithEmail()} >Sign Up</Button>
-    </Form>
+    <ScrollView keyboardDismissMode='on-drag'>  
+      <Form
+        f={1} 
+        ai={'stretch'} 
+        gap="$2" 
+        px="$6" 
+        pt="$20" 
+        bg="$background"
+        pb="$zIndex.3"
+      >
+        <H1>Tectonik</H1>
+        <H2>Sign In</H2>
+        <Label htmlFor='email' fontWeight='bold'>Email</Label>
+        <Input
+          onChangeText={(text) => setEmail(text)}
+          value={email}
+          placeholder="email@address.com"
+          autoCapitalize={'none'}
+        />
+        <Label htmlFor='password' fontWeight='bold'>Password</Label>
+        <Input
+          onChangeText={(text) => setPassword(text)}
+          value={password}
+          secureTextEntry={true}
+          placeholder="Password"
+          autoCapitalize={'none'}
+        />
+        <Button mt='$5' onPress={() => signInWithEmail()} >Sign In</Button>
+        <Button onPress={() => signUpWithEmail()} >Sign Up</Button>
+      </Form>
+    </ScrollView>
   )
 }
