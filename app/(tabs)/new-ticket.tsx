@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ChevronDown, Check } from '@tamagui/lucide-icons'
 import { supabase } from 'utils/supabase'
+import { Circle } from '@tamagui/lucide-icons'
 import { 
   ScrollView,
   Form, 
@@ -39,16 +40,16 @@ export default function TabTwoScreen() {
       }
 
       setUserId(user.id)
-      fetchUserLocations(user.id)
+      fetchUserLocations()
       fetchLocationNames()
     })
   }, [])
 
-  async function fetchUserLocations(id: string) {
+  async function fetchUserLocations() {
     const { data, error } = await supabase
       .from('users-locations')
       .select('*')
-      .eq('user_id', id)
+      .eq('user_id', userId)
 
       if (error) {
         console.error('Error fetching locations:', error)
@@ -113,8 +114,6 @@ export default function TabTwoScreen() {
     }
   }, [formStatus])
 
-  console.log(userId, locations, locationNames)
-
   return (
     <ScrollView keyboardDismissMode='on-drag'>
       <Form 
@@ -151,7 +150,12 @@ export default function TabTwoScreen() {
               <Select.Group>
                 {colorOptions.map((option, i) => (
                   <Select.Item index={i} key={option} value={option}>
-                    <Select.ItemText>{option}</Select.ItemText>
+                    <Select.ItemText>
+                      {option.charAt(0).toUpperCase() + option.slice(1)}  
+                      {option === 'green' ? <Circle size={16} color='green' /> : null}
+                      {option === 'orange' ? <Circle size={16} color='orange' /> : null}
+                      {option === 'red' ? <Circle size={16} color='red' /> : null}
+                    </Select.ItemText>
                     <Select.ItemIndicator marginLeft="auto">
                       <Check size={16} />
                     </Select.ItemIndicator>

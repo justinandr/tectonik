@@ -1,23 +1,18 @@
-import { X } from '@tamagui/lucide-icons';
 import { useState, useEffect } from 'react'
 import { CircleAlert } from '@tamagui/lucide-icons';
 import { 
-  Text,
   Button, 
   Card, 
   H2,
   H3, 
-  Paragraph, 
-  Theme, 
-  XStack,
+  Paragraph,
   XGroup, 
   YStack, 
   useTheme,
   ScrollView, 
-  View} from 'tamagui'
+} from 'tamagui'
 import { supabase } from 'utils/supabase'
 import { RefreshControl } from 'react-native';
-import { themes } from '@tamagui/config/v3';
 
 type Ticket = {
   id: string;
@@ -31,15 +26,8 @@ type Ticket = {
   description: string;
 }
 
-type Location = {
-  id: string;
-  name: string;
-  address: string;
-}
-
 export default function TabOneScreen() {
 
-  const theme = useTheme()
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [refreshing, setRefreshing] = useState(false)
   const [renderOpenTickets, setRenderOpenTickets] = useState(true)
