@@ -15,13 +15,62 @@ import {
   Button
 } from 'tamagui'
 
+type Location = {
+  user_id: string;
+  location_id: string;
+}
+
 export default function TabTwoScreen() {
 
+  const [locations, setLocations] = useState<Location[]>([])
+  const [locationNames, setLocationNames] = useState<string[]>([])
+  const [userId, setUserId] = useState('')
   const [colorCode, setColorCode] = useState('green')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [formStatus, setFormStatus] = useState<'off' | 'submitting' | 'submitted'>('off')
   const colorOptions = ['green', 'orange', 'red']
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) {
+        console.error('User is not authenticated')
+        return
+      }
+
+      setUserId(user.id)
+      fetchUserLocations(user.id)
+      fetchLocationNames()
+    })
+  }, [])
+
+  async function fetchUserLocations(id: string) {
+    const { data, error } = await supabase
+      .from('users-locations')
+      .select('*')
+      .eq('user_id', id)
+
+      if (error) {
+        console.error('Error fetching locations:', error)
+        return
+      }
+
+      setLocations(data)
+  }
+
+  async function fetchLocationNames() {
+    const { data, error } = await supabase
+      .from('locations')
+      .select('name')
+      .eq('id', locations.map(location => location.location_id))
+
+      if (error) {
+        console.error('Error fetching location names:', error)
+        return
+      }
+
+      setLocationNames(data.map((location: { name: string }) => location.name))
+  }  
 
   async function submitForm() {
     const { data: { user } } = await supabase.auth.getUser()
@@ -33,10 +82,13 @@ export default function TabTwoScreen() {
 
     const { error } = await supabase
       .from('tickets')
-      .insert([{ color_code: colorCode, 
+      .insert([{ 
+        color_code: colorCode, 
         title: title, 
         description: description,
-        user_id: user.id
+        user_id: user.id,
+        location_name: locationNames[0],
+        location_id: locations[0].location_id,
       }])
 
       if (error) {
@@ -61,8 +113,10 @@ export default function TabTwoScreen() {
     }
   }, [formStatus])
 
+  console.log(userId, locations, locationNames)
+
   return (
-    <ScrollView>
+    <ScrollView keyboardDismissMode='on-drag'>
       <Form 
         f={1} 
         ai={'stretch'} 
@@ -109,7 +163,7 @@ export default function TabTwoScreen() {
           </Select.Content>
         </Select>
         <Label htmlFor='title'>Title</Label>
-        <Input id='title' value={title} onChangeText={setTitle} placeholder='Enter title'/>
+        <Input id='title' value={title} onChangeText={text => setTitle(text)} placeholder='Enter title'/>
         <Label htmlFor='description'>Description:</Label>
         <TextArea id='description' value={description} onChangeText={setDescription} height='$10' placeholder='Enter description'/>
         <Form.Trigger asChild disabled={formStatus !== 'off'}>

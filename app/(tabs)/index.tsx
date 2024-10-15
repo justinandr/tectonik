@@ -41,7 +41,6 @@ export default function TabOneScreen() {
 
   const theme = useTheme()
   const [tickets, setTickets] = useState<Ticket[]>([])
-  const [locations, setLocations] = useState<Location[]>([])
   const [refreshing, setRefreshing] = useState(false)
   const [renderOpenTickets, setRenderOpenTickets] = useState(true)
 
@@ -110,7 +109,7 @@ export default function TabOneScreen() {
                     <H3>
                       {ticket.location_name}
                       {ticket.color_code === 'red' && ticket.status === 'open' ? 
-                      <CircleAlert px='$6' size={20} color='$red10' /> 
+                      <CircleAlert px='$3' position='relative' size={20} color='$red10' /> 
                       : null}
                     </H3>
                     <Paragraph>{ticket.description}</Paragraph>
