@@ -40,6 +40,14 @@
             "newArchEnabled": true
           }
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Tectonik to access your photos",
+          "cameraPermission": "Allow Tectonik to take pictures and record video",
+          "microphonePermission": "Allow Tectonik to record audio"
+        }
       ]
     ],
     "experiments": {
