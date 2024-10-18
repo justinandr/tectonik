@@ -14,7 +14,6 @@ import {
   Sheet,
   Adapt,
   Button,
-  View
 } from 'tamagui'
 
 type Location = {
@@ -27,7 +26,6 @@ export default function TabTwoScreen() {
   const [locations, setLocations] = useState<Location[]>([])
   const [locationNames, setLocationNames] = useState<string[]>([])
   const [selectedLocation, setSelectedLocation] = useState('')
-  const [userId, setUserId] = useState('')
   const [colorCode, setColorCode] = useState('green')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -35,54 +33,59 @@ export default function TabTwoScreen() {
   const colorOptions = ['green', 'orange', 'red']
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) {
-        console.error('User is not authenticated')
-        return
-      }
-
-      setUserId(user.id)
-      if (userId){
-        fetchUserLocations()
-      } else console.log('No user id')
-      if (locations){
-      fetchLocationNames()
-      } else console.log('No locations')
-    })
-  }, [])
-
-  async function fetchUserLocations() {
-    if (userId) {
-      const { data, error } = await supabase
-        .from('users-locations')
-        .select('*')
-        .eq('user_id', userId)
-
-        if (error) {
-          console.error('Error fetching locations:', error)
+    async function fetchUserId() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) {
+          console.error('User is not authenticated')
           return
         }
-
-        setLocations(data)
+        fetchUserLocations(user.id)
+      }
+      catch (error) {
+        console.error('Error fetching user id:', error)
+      }
     }
+    fetchUserId()
+    
+  }, [])
+
+  useEffect(() => {
+    if (locations) {
+      fetchLocationNames()
+    }
+  }, [locations])
+
+  async function fetchUserLocations(id: string) {
+    
+    const { data, error } = await supabase
+      .from('users-locations')
+      .select('*')
+      .eq('user_id', id)
+
+      if (error) {
+        console.error('Error fetching locations:', error)
+        return
+      }
+      setLocations(data)
   }
 
-  async function fetchLocationNames() {
-    if (locations) {
-      locations.map(async (location) => {
-        const { data, error } = await supabase
-          .from('locations')
-          .select('name')
-          .eq('id', location.location_id)
+  async function fetchLocationNames() { 
+    const locationNames = locations.map(async location => {
+      const { data, error } = await supabase
+        .from('locations')
+        .select('name')
+        .eq('id', location.location_id)
 
-          if (error) {
-            console.error('Error fetching location names:', error)
-            return
-          }
+        if (error) {
+          console.error('Error fetching location names:', error)
+          return
+        }
+        return data[0].name
+    })
 
-          setLocationNames(prev => [...prev, data[0].name])
-      } )
-    }
+    const names = await Promise.all(locationNames)
+    setLocationNames(names)
   }  
 
   async function submitForm() {
@@ -125,8 +128,6 @@ export default function TabTwoScreen() {
       }
     }
   }, [formStatus])
-
-  console.log(locationNames)
 
   return (
     <ScrollView keyboardDismissMode='on-drag'>
