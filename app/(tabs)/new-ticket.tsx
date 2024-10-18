@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
-import { ChevronDown, Check } from '@tamagui/lucide-icons'
+import { ChevronDown, Check, X } from '@tamagui/lucide-icons'
 import { supabase } from 'utils/supabase'
-import { Circle } from '@tamagui/lucide-icons'
+import { Circle, Image as ImageIcon } from '@tamagui/lucide-icons'
+import TicketImagePicker from 'components/ImagePicker'
+import * as ImagePicker from 'expo-image-picker'
+import { decode } from 'base64-arraybuffer'
 import { 
   ScrollView,
   Form, 
@@ -14,18 +17,27 @@ import {
   Sheet,
   Adapt,
   Button,
+  Image,
+  XGroup
 } from 'tamagui'
 
 type Location = {
-  user_id: string;
-  location_id: string;
+  id: string;
+  address: string;
+  name: string;
+}
+
+type SelectedImage = {
+  base64: string;
+  uri: string;
 }
 
 export default function TabTwoScreen() {
 
   const [locations, setLocations] = useState<Location[]>([])
-  const [locationNames, setLocationNames] = useState<string[]>([])
-  const [selectedLocation, setSelectedLocation] = useState('')
+  const [locationIds, setLocationIds] = useState<string[]>([])
+  const [images, setImages] = useState<SelectedImage[]>([])
+  const [selectedLocationName, setSelectedLocationName] = useState('')
   const [colorCode, setColorCode] = useState('green')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -33,60 +45,47 @@ export default function TabTwoScreen() {
   const colorOptions = ['green', 'orange', 'red']
 
   useEffect(() => {
-    async function fetchUserId() {
-      try {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) {
-          console.error('User is not authenticated')
-          return
-        }
-        fetchUserLocations(user.id)
-      }
-      catch (error) {
-        console.error('Error fetching user id:', error)
-      }
-    }
-    fetchUserId()
-    
-  }, [])
+    const fetchUserLocations = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
 
-  useEffect(() => {
-    if (locations) {
-      fetchLocationNames()
-    }
-  }, [locations])
+      if (!user) {
+        console.error('User is not authenticated')
+        return
+      }
 
-  async function fetchUserLocations(id: string) {
-    
-    const { data, error } = await supabase
-      .from('users-locations')
-      .select('*')
-      .eq('user_id', id)
+      const { data: locations, error } = await supabase
+        .from('users-locations')
+        .select('location_id')
+        .eq('user_id', user.id)
 
       if (error) {
         console.error('Error fetching locations:', error)
         return
       }
-      setLocations(data)
-  }
 
-  async function fetchLocationNames() { 
-    const locationNames = locations.map(async location => {
-      const { data, error } = await supabase
+      setLocationIds(locations.map(location => location.location_id))
+    }
+
+    fetchUserLocations()
+  }, [])
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      const { data: locations, error } = await supabase
         .from('locations')
-        .select('name')
-        .eq('id', location.location_id)
+        .select('*')
+        .in('id', locationIds)
 
-        if (error) {
-          console.error('Error fetching location names:', error)
-          return
-        }
-        return data[0].name
-    })
+      if (error) {
+        console.error('Error fetching locations:', error)
+        return
+      }
 
-    const names = await Promise.all(locationNames)
-    setLocationNames(names)
-  }  
+      setLocations(locations)
+    }
+
+    fetchLocations()
+  }, [locationIds])
 
   async function submitForm() {
     const { data: { user } } = await supabase.auth.getUser()
@@ -103,8 +102,9 @@ export default function TabTwoScreen() {
         title: title, 
         description: description,
         user_id: user.id,
-        location_name: locationNames[0],
-        location_id: locations[0].location_id,
+        location_name: locations.find(location => location.name === selectedLocationName)?.name,
+        location_id: locations.find(location => location.name === selectedLocationName)?.id,
+        images: images.map(image => image.uri as string)
       }])
 
       if (error) {
@@ -112,8 +112,50 @@ export default function TabTwoScreen() {
         return
       }
 
+      if(images) {
+        images.map(async image => {
+          const { data, error } = await supabase.storage
+            .from('ticket-images')
+            .upload(`ticket-${Date.now()}.jpg`, decode(image.base64), {
+              contentType: 'image/jpeg',
+            })
+  
+            if (error) {
+              console.error('Error uploading image:', error)
+              return
+            }
+        })
+      }
+
       setFormStatus('submitted')
 
+  }
+
+  function clearImages() {
+    setImages([])
+  }
+
+  async function pickImage() {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false,
+      allowsMultipleSelection: true,
+      quality: 1,
+      exif: false,
+      base64: false,
+    })
+
+    if (!result.canceled) {
+      const selectedImages = result.assets.map((image: any) => {
+        return {
+          base64: image.base64,
+          uri: image.uri,
+        }
+      })
+
+      setImages([...images, ...selectedImages])
+      console.log(result)
+    }
   }
 
   useEffect(() => {
@@ -125,9 +167,11 @@ export default function TabTwoScreen() {
         setColorCode('green')
         setTitle('')
         setDescription('')
+        setSelectedLocationName('')
+        setImages([])
       }
     }
-  }, [formStatus])
+  }, [formStatus]) 
 
   return (
     <ScrollView keyboardDismissMode='on-drag'>
@@ -145,10 +189,10 @@ export default function TabTwoScreen() {
         pb="$20"
       >
         <H2>New Ticket</H2>
-        {locationNames.length > 1 ?
+        {locations.length > 1 ?
           <>
             <Label htmlFor='location'>Location:</Label>
-            <Select value={locationNames[0]} onValueChange={setSelectedLocation} native id='location' defaultValue={locationNames[0]}>
+            <Select value={selectedLocationName} onValueChange={setSelectedLocationName} native id='location' >
               <Select.Trigger iconAfter={ChevronDown}>
                 <Select.Value placeholder='Select One' />
               </Select.Trigger>
@@ -165,9 +209,9 @@ export default function TabTwoScreen() {
                 <Select.ScrollUpButton />
                 <Select.Viewport>
                   <Select.Group>
-                    {locationNames.map((name, i) => (
-                      <Select.Item index={i} key={name} value={name}>
-                        <Select.ItemText>{name}</Select.ItemText>
+                    {locations.map((location, i) => (
+                      <Select.Item index={i} key={location.name} value={location.name}>
+                        <Select.ItemText>{location.name}</Select.ItemText>
                         <Select.ItemIndicator marginLeft="auto">
                           <Check size={16} />
                         </Select.ItemIndicator>
@@ -220,6 +264,17 @@ export default function TabTwoScreen() {
         <Input value={title} onChangeText={text => setTitle(text)} placeholder='Enter title'/>
         <Label htmlFor='description'>Description:</Label>
         <TextArea value={description} onChangeText={setDescription} height='$10' placeholder='Enter description'/>
+        <Button icon={ImageIcon} onPress={pickImage}>Select Images</Button>
+        <XGroup f={1} justifyContent='center' gap="$1">
+        {images ? images.map((image, i) => {
+          return (
+            <XGroup.Item key={i}>
+              <Image source={{ uri: image.uri }} width='$6' height='$6' />
+            </XGroup.Item>
+          )
+        }) : null}
+        </XGroup>
+        {images.length > 0 ? <Button icon={X} onPress={clearImages} >Clear Images</Button> : null}
         <Form.Trigger asChild disabled={formStatus !== 'off'}>
           <Button icon={formStatus === 'submitting' ? () => <Spinner /> : undefined}>Submit</Button>
         </Form.Trigger>
