@@ -7,6 +7,7 @@ import { useFonts } from 'expo-font'
 import { SplashScreen, Stack } from 'expo-router'
 import { Provider } from './Provider'
 import { useTheme } from 'tamagui'
+import ModalScreen from './modal'
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -66,6 +67,14 @@ function RootLayoutNav() {
           name="(tabs)"
           options={{
             headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name='ticketdetails'
+          options={{
+            headerShown: false,
+            title: 'Ticket Details',
+            presentation: 'modal',
           }}
         />
       </Stack>

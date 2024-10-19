@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'expo-router';
 import { Circle } from '@tamagui/lucide-icons';
 import { 
   Button, 
@@ -7,11 +8,9 @@ import {
   H3, 
   Paragraph,
   XGroup, 
-  YStack, 
-  useTheme,
+  YStack,
   ScrollView,
-  XStack,
-  H5, 
+  H5,
 } from 'tamagui'
 import { supabase } from 'utils/supabase'
 import { RefreshControl } from 'react-native';
@@ -94,27 +93,29 @@ export default function TabOneScreen() {
           {tickets.map(ticket => {
             if(ticket.status === 'open' && renderOpenTickets) {
               return (
-                <Card key={ticket.id} elevate bg='$accentBackground'>
-                  <Card.Header>
-                    <H3>
-                    {ticket.location_name + ' - ' + ticket.title}
-                    {ticket.color_code === 'red' && ticket.status === 'open' ? <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$red10'} /> : null}
-                    {ticket.color_code === 'orange' && ticket.status === 'open' ? <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$orange7'} /> : null}
-                    {ticket.color_code === 'green' && ticket.status === 'open' ? <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$green10'} /> : null}
-                    </H3>
-                    <H5>{ new Date(ticket.created_at).toLocaleString('en-us', {
-                          weekday: 'long', 
-                          month: 'long', 
-                          year: 'numeric', 
-                          day: 'numeric', 
-                          hour: 'numeric', 
-                          minute: 'numeric', 
-                          hourCycle: 'h12'
-                          })}
-                    </H5>
-                    <Paragraph>{ticket.description.length > 100 ? ticket.description.slice(0, 100) + '...' : ticket.description}</Paragraph>
-                  </Card.Header>
-                </Card>
+                <Link href={`/ticketdetails/${ticket.id}`} key={ticket.id}>
+                  <Card key={ticket.id} elevate bg='$accentBackground'>
+                    <Card.Header>
+                      <H3>
+                      {ticket.location_name + ' - ' + ticket.title}
+                      {ticket.color_code === 'red' && ticket.status === 'open' ? <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$red10'} /> : null}
+                      {ticket.color_code === 'orange' && ticket.status === 'open' ? <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$orange7'} /> : null}
+                      {ticket.color_code === 'green' && ticket.status === 'open' ? <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$green10'} /> : null}
+                      </H3>
+                      <H5>{ new Date(ticket.created_at).toLocaleString('en-us', {
+                            weekday: 'long', 
+                            month: 'long', 
+                            year: 'numeric', 
+                            day: 'numeric', 
+                            hour: 'numeric', 
+                            minute: 'numeric', 
+                            hourCycle: 'h12'
+                            })}
+                      </H5>
+                      <Paragraph>{ticket.description.length > 100 ? ticket.description.slice(0, 100) + '...' : ticket.description}</Paragraph>
+                    </Card.Header>
+                  </Card>
+                </Link>
               )
             }
             else if(ticket.status === 'closed' && !renderOpenTickets) {
