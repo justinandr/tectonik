@@ -98,6 +98,7 @@ export default function TabTwoScreen() {
     const { error } = await supabase
       .from('tickets')
       .insert([{ 
+        // created_at: new Date().toLocaleString('en-US', {weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hourCycle:'h12', hour: 'numeric', minute: 'numeric'}),
         color_code: colorCode, 
         title: title, 
         description: description,
@@ -275,7 +276,7 @@ export default function TabTwoScreen() {
         }) : null}
         </XGroup>
         {images.length > 0 ? <Button icon={X} onPress={clearImages} >Clear Images</Button> : null}
-        <Form.Trigger asChild disabled={formStatus !== 'off'}>
+        <Form.Trigger asChild disabled={formStatus === 'submitting'}>
           <Button icon={formStatus === 'submitting' ? () => <Spinner /> : undefined}>Submit</Button>
         </Form.Trigger>
       </Form>

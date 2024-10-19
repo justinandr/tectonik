@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { CircleAlert } from '@tamagui/lucide-icons';
+import { Circle } from '@tamagui/lucide-icons';
 import { 
   Button, 
   Card, 
@@ -9,7 +9,9 @@ import {
   XGroup, 
   YStack, 
   useTheme,
-  ScrollView, 
+  ScrollView,
+  XStack,
+  H5, 
 } from 'tamagui'
 import { supabase } from 'utils/supabase'
 import { RefreshControl } from 'react-native';
@@ -31,6 +33,8 @@ export default function TabOneScreen() {
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [refreshing, setRefreshing] = useState(false)
   const [renderOpenTickets, setRenderOpenTickets] = useState(true)
+
+  console.log(tickets[0])
 
   async function fetchTickets() {
     try {
@@ -94,13 +98,12 @@ export default function TabOneScreen() {
               return (
                 <Card key={ticket.id} elevate bg='$accentBackground'>
                   <Card.Header>
-                    <H3>
-                      {ticket.location_name}
-                      {ticket.color_code === 'red' && ticket.status === 'open' ? 
-                      <CircleAlert px='$3' position='relative' size={20} color='$red10' /> 
-                      : null}
-                    </H3>
+                    <H3>{ticket.location_name + ' - ' + ticket.title}</H3>
+                    <H5>{ticket.created_at}</H5>
                     <Paragraph>{ticket.description}</Paragraph>
+                    {ticket.color_code === 'red' && ticket.status === 'open' ? <Circle alignSelf='flex-end' size={'$2'} color={'$red10'} /> : null}
+                    {ticket.color_code === 'orange' && ticket.status === 'open' ? <Circle alignSelf='flex-end' size={'$2'} color={'$orange7'} /> : null}
+                    {ticket.color_code === 'green' && ticket.status === 'open' ? <Circle alignSelf='flex-end' size={'$2'} color={'$green10'} /> : null}
                   </Card.Header>
                 </Card>
               )
