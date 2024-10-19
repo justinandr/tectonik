@@ -34,8 +34,6 @@ export default function TabOneScreen() {
   const [refreshing, setRefreshing] = useState(false)
   const [renderOpenTickets, setRenderOpenTickets] = useState(true)
 
-  console.log(tickets[0])
-
   async function fetchTickets() {
     try {
       const { data, error } = await supabase
@@ -98,12 +96,23 @@ export default function TabOneScreen() {
               return (
                 <Card key={ticket.id} elevate bg='$accentBackground'>
                   <Card.Header>
-                    <H3>{ticket.location_name + ' - ' + ticket.title}</H3>
-                    <H5>{ticket.created_at}</H5>
-                    <Paragraph>{ticket.description}</Paragraph>
-                    {ticket.color_code === 'red' && ticket.status === 'open' ? <Circle alignSelf='flex-end' size={'$2'} color={'$red10'} /> : null}
-                    {ticket.color_code === 'orange' && ticket.status === 'open' ? <Circle alignSelf='flex-end' size={'$2'} color={'$orange7'} /> : null}
-                    {ticket.color_code === 'green' && ticket.status === 'open' ? <Circle alignSelf='flex-end' size={'$2'} color={'$green10'} /> : null}
+                    <H3>
+                    {ticket.location_name + ' - ' + ticket.title}
+                    {ticket.color_code === 'red' && ticket.status === 'open' ? <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$red10'} /> : null}
+                    {ticket.color_code === 'orange' && ticket.status === 'open' ? <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$orange7'} /> : null}
+                    {ticket.color_code === 'green' && ticket.status === 'open' ? <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$green10'} /> : null}
+                    </H3>
+                    <H5>{ new Date(ticket.created_at).toLocaleString('en-us', {
+                          weekday: 'long', 
+                          month: 'long', 
+                          year: 'numeric', 
+                          day: 'numeric', 
+                          hour: 'numeric', 
+                          minute: 'numeric', 
+                          hourCycle: 'h12'
+                          })}
+                    </H5>
+                    <Paragraph>{ticket.description.length > 100 ? ticket.description.slice(0, 100) + '...' : ticket.description}</Paragraph>
                   </Card.Header>
                 </Card>
               )

@@ -98,7 +98,6 @@ export default function TabTwoScreen() {
     const { error } = await supabase
       .from('tickets')
       .insert([{ 
-        // created_at: new Date().toLocaleString('en-US', {weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hourCycle:'h12', hour: 'numeric', minute: 'numeric'}),
         color_code: colorCode, 
         title: title, 
         description: description,
