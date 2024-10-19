@@ -27,7 +27,7 @@ type Ticket = {
   description: string;
 }
 
-export default function TabOneScreen() {
+export default function Home() {
 
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [refreshing, setRefreshing] = useState(false)
@@ -62,7 +62,7 @@ export default function TabOneScreen() {
     <ScrollView refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={fetchTickets} />
     }>
-      <YStack f={1} ai={'stretch'} gap="$8" px="$3" pt="$6" pb='$zIndex.4' bg="$background">
+      <YStack f={1} ai={'center'} gap="$8" px="$2" pt="$6" pb='$zIndex.4' bg="$background">
         <H2 ta={'left'}>Tickets</H2>
         <XGroup>
           <XGroup.Item>

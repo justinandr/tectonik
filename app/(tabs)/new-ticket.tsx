@@ -32,7 +32,7 @@ type SelectedImage = {
   fileName: string;
 }
 
-export default function TabTwoScreen() {
+export default function NewTicket() {
 
   const [locations, setLocations] = useState<Location[]>([])
   const [locationIds, setLocationIds] = useState<string[]>([])
@@ -116,7 +116,7 @@ export default function TabTwoScreen() {
         images.map(async image => {
           const { data, error } = await supabase.storage
             .from('ticket-images')
-            .upload(`ticket-${Date.now()}.jpg`, decode(image.base64), {
+            .upload(image.fileName, decode(image.base64), {
               contentType: 'image/jpeg',
             })
   

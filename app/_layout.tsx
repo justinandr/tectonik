@@ -70,7 +70,7 @@ function RootLayoutNav() {
           }}
         />
         <Stack.Screen 
-          name='ticketdetails'
+          name="ticketdetails"
           options={{
             headerShown: false,
             title: 'Ticket Details',
