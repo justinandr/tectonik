@@ -21,6 +21,7 @@ export default function TicketByID() {
 
   const { id } = useLocalSearchParams()
   const [ticket, setTicket] = useState<Ticket | null>()
+  const [userName, setUserName] = useState<string>('')
 
   async function fetchTicket() {
     try {
@@ -43,6 +44,29 @@ export default function TicketByID() {
     fetchTicket()
   }, [])
 
+  async function fetchUserName() {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('name')
+        .eq('user_id', ticket?.user_id)
+        
+        if (error) {
+          throw error
+        }
+        setUserName(data[0].name)
+    }
+    catch (error) {
+      console.log('error', error)
+    }
+  }
+
+  useEffect(() => {
+    if (ticket) {
+      fetchUserName()
+    }
+  }, [ticket])
+
   return (
     <ScrollView>
       <YStack flex={1} ai={'stretch'} gap="$2" px="$3" pt="$6" pb='$zIndex.4' bg="$background">
@@ -61,7 +85,7 @@ export default function TicketByID() {
               <Circle marginBottom='$1.5' alignSelf='flex-end' size={'$1'} color={'$green10'} /> 
               : null}
             </H2>
-            <H4>Submitted by: {ticket.user_id}</H4>
+            <H4>Submitted by: {userName ? userName : ''}</H4>
             <H5>Status: {ticket.status}</H5>
             <H5>{ new Date(ticket.created_at).toLocaleString('en-us', {
                   weekday: 'long', 

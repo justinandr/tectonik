@@ -97,7 +97,7 @@ export default function Home() {
                   <Card key={ticket.id} elevate bg='$accentBackground'>
                     <Card.Header>
                       <H3>
-                      {ticket.location_name + ' - ' + ticket.title}
+                      {ticket.location_name + ' - ' + ticket.title + ' '}
                       {ticket.color_code === 'red' && ticket.status === 'open' ? <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$red10'} /> : null}
                       {ticket.color_code === 'orange' && ticket.status === 'open' ? <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$orange7'} /> : null}
                       {ticket.color_code === 'green' && ticket.status === 'open' ? <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$green10'} /> : null}
