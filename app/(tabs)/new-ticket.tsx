@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { ChevronDown, Check, X } from '@tamagui/lucide-icons'
 import { supabase } from 'utils/supabase'
 import { Circle, Image as ImageIcon } from '@tamagui/lucide-icons'
-import TicketImagePicker from 'components/ImagePicker'
 import * as ImagePicker from 'expo-image-picker'
 import { decode } from 'base64-arraybuffer'
 import { 
@@ -30,6 +29,7 @@ type Location = {
 type SelectedImage = {
   base64: string;
   uri: string;
+  fileName: string;
 }
 
 export default function TabTwoScreen() {
@@ -104,7 +104,7 @@ export default function TabTwoScreen() {
         user_id: user.id,
         location_name: locations.find(location => location.name === selectedLocationName)?.name,
         location_id: locations.find(location => location.name === selectedLocationName)?.id,
-        images: images.map(image => image.uri as string)
+        images: images.map(image => image.fileName as string)
       }])
 
       if (error) {
@@ -142,7 +142,7 @@ export default function TabTwoScreen() {
       allowsMultipleSelection: true,
       quality: 1,
       exif: false,
-      base64: false,
+      base64: true,
     })
 
     if (!result.canceled) {
@@ -150,11 +150,11 @@ export default function TabTwoScreen() {
         return {
           base64: image.base64,
           uri: image.uri,
+          fileName: image.uri.split('/').pop()
         }
       })
 
       setImages([...images, ...selectedImages])
-      console.log(result)
     }
   }
 
