@@ -1,6 +1,6 @@
-import { View, Text, ScrollView, YStack, H2, H4, H5, Paragraph, Button } from 'tamagui'
+import { ScrollView, YStack, H2, H4, H5, Paragraph, Button, Image, XGroup } from 'tamagui'
 import { Circle } from '@tamagui/lucide-icons'
-import { useLocalSearchParams } from 'expo-router'
+import { useLocalSearchParams, router } from 'expo-router'
 import { supabase } from 'utils/supabase'
 import { useEffect, useState } from 'react'
 
@@ -22,6 +22,7 @@ export default function TicketByID() {
   const { id } = useLocalSearchParams()
   const [ticket, setTicket] = useState<Ticket | null>()
   const [userName, setUserName] = useState<string>('')
+  const [imageUris, setImageUris] = useState<string[]>([])
 
   async function fetchTicket() {
     try {
@@ -67,6 +68,57 @@ export default function TicketByID() {
     }
   }, [ticket])
 
+  // async function fetchImageUris() {
+  //   try {
+  //     const { data, error } = await supabase
+  //       .storage
+  //       .from('ticket-images')
+  //       .download(ticket?.images[0])
+        
+  //       if (error) {
+  //         throw error
+  //       }
+  //       setImageUris(data)
+  //   }
+  //   catch (error) {
+  //     console.log('error', error)
+  //   }
+  // }
+
+  async function closeTicket() {
+    try {
+      const { error } = await supabase
+        .from('tickets')
+        .update({ status: 'closed' })
+        .eq('id', id)
+        
+        if (error) {
+          throw error
+        }
+    }
+    catch (error) {
+      console.log('error', error)
+    }
+    router.replace('/(tabs)')
+  }
+
+  async function reopenTicket() {
+    try {
+      const { error } = await supabase
+        .from('tickets')
+        .update({ status: 'open' })
+        .eq('id', id)
+        
+        if (error) {
+          throw error
+        }
+    }
+    catch (error) {
+      console.log('error', error)
+    }
+    router.replace('/(tabs)')
+  }
+
   return (
     <ScrollView>
       <YStack flex={1} ai={'stretch'} gap="$2" px="$3" pt="$6" pb='$zIndex.4' bg="$background">
@@ -101,7 +153,21 @@ export default function TicketByID() {
             <Paragraph>{ticket.description}</Paragraph>
           </>
         ) : <H4>Loading...</H4>}
-        <Button>Close Ticket</Button>
+        {ticket?.images ? 
+          ticket.images.map((image, index) => {
+            return (
+              <XGroup key={index}>
+                <Image source={{ uri: image }} width={200} height={200} />
+              </XGroup>
+            )
+          })
+        : null}
+        {ticket?.status === 'closed' ? 
+          <Button onPress={reopenTicket}>Reopen Ticket</Button>
+        : null}
+        {ticket?.status === 'open' ? 
+          <Button onPress={closeTicket}>Close Ticket</Button>
+        : null}
         <Button>Create Report</Button>
       </YStack>
     </ScrollView>

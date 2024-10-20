@@ -95,7 +95,7 @@ export default function NewTicket() {
       return
     }
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('tickets')
       .insert([{ 
         color_code: colorCode, 
@@ -110,6 +110,8 @@ export default function NewTicket() {
       if (error) {
         console.error('Error inserting ticket:', error)
         return
+      } else {
+        console.log('Ticket inserted:', data)
       }
 
       if(images) {
@@ -179,7 +181,7 @@ export default function NewTicket() {
         f={1} 
         ai={'stretch'} 
         gap="$2" 
-        px="$6" 
+        px="$4" 
         pt="$6" 
         bg="$background"
         onSubmit= {() => {
@@ -192,7 +194,7 @@ export default function NewTicket() {
         {locations.length > 1 ?
           <>
             <Label htmlFor='location'>Location:</Label>
-            <Select value={selectedLocationName} onValueChange={setSelectedLocationName} native id='location' >
+            <Select value={selectedLocationName} onValueChange={setSelectedLocationName} native >
               <Select.Trigger iconAfter={ChevronDown}>
                 <Select.Value placeholder='Select One' />
               </Select.Trigger>

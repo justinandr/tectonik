@@ -62,8 +62,8 @@ export default function Home() {
     <ScrollView refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={fetchTickets} />
     }>
-      <YStack f={1} ai={'center'} gap="$8" px="$2" pt="$6" pb='$zIndex.4' bg="$background">
-        <H2 ta={'left'}>Tickets</H2>
+      <YStack f={1} ai={'stretch'} gap="$2" px="$4" pt="$6" paddingBottom='$zIndex.5' bg="$background">
+        <H2>Tickets</H2>
         <XGroup>
           <XGroup.Item>
             <Button 
@@ -120,14 +120,27 @@ export default function Home() {
             }
             else if(ticket.status === 'closed' && !renderOpenTickets) {
               return (
-                <Card key={ticket.id} elevate bg='$accentBackground'>
-                  <Card.Header>
-                    <H3>
-                      {ticket.location_name}
-                    </H3>
-                    <Paragraph>{ticket.description}</Paragraph>
-                  </Card.Header>
-                </Card>
+                <Link href={`/ticketdetails/${ticket.id}`} key={ticket.id}>
+                  <Card key={ticket.id} elevate bg='$accentBackground'>
+                    <Card.Header>
+                      <H3>{ticket.location_name + ' - ' + ticket.title}</H3>
+                      <H5>{ new Date(ticket.created_at).toLocaleString('en-us', {
+                            weekday: 'long', 
+                            month: 'long', 
+                            year: 'numeric', 
+                            day: 'numeric', 
+                            hour: 'numeric', 
+                            minute: 'numeric', 
+                            hourCycle: 'h12'
+                            })}
+                      </H5>
+                      <Paragraph>{ticket.description.length > 100 ? 
+                        ticket.description.slice(0, 100) + '...' 
+                        : ticket.description}
+                      </Paragraph>
+                    </Card.Header>
+                  </Card>
+                </Link>
               )
             }
           })}
