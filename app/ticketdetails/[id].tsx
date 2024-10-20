@@ -1,4 +1,4 @@
-import { ScrollView, YStack, H2, H4, H5, Paragraph, Button, Image, XGroup } from 'tamagui'
+import { ScrollView, YStack, H2, H4, H5, Paragraph, Button, Image, YGroup } from 'tamagui'
 import { Circle } from '@tamagui/lucide-icons'
 import { useLocalSearchParams, router } from 'expo-router'
 import { supabase } from 'utils/supabase'
@@ -22,68 +22,73 @@ export default function TicketByID() {
   const { id } = useLocalSearchParams()
   const [ticket, setTicket] = useState<Ticket | null>()
   const [userName, setUserName] = useState<string>('')
+  const [images, setImages] = useState<string[]>([])
   const [imageUris, setImageUris] = useState<string[]>([])
 
-  async function fetchTicket() {
-    try {
-      const { data, error } = await supabase
-        .from('tickets')
-        .select('*')
-        .eq('id', id)
-        
-        if (error) {
-          throw error
-        }
-        setTicket(data[0] as Ticket)
-    }
-    catch (error) {
-      console.log('error', error)
-    }
-  }
-
   useEffect(() => {
+    async function fetchTicket() {
+      try {
+        const { data, error } = await supabase
+          .from('tickets')
+          .select('*')
+          .eq('id', id)
+          
+          if (error) {
+            throw error
+          }
+          setTicket(data[0] as Ticket)
+          setImages(data[0].images)
+      }
+      catch (error) {
+        console.log('error', error)
+      }
+    }
     fetchTicket()
   }, [])
 
-  async function fetchUserName() {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('name')
-        .eq('user_id', ticket?.user_id)
-        
-        if (error) {
-          throw error
-        }
-        setUserName(data[0].name)
-    }
-    catch (error) {
-      console.log('error', error)
-    }
-  }
-
   useEffect(() => {
+    async function fetchUserName() {
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('name')
+          .eq('user_id', ticket?.user_id)
+          
+          if (error) {
+            throw error
+          }
+          setUserName(data[0].name)
+      }
+      catch (error) {
+        console.log('error', error)
+      }
+    }
     if (ticket) {
       fetchUserName()
     }
   }, [ticket])
 
-  // async function fetchImageUris() {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .storage
-  //       .from('ticket-images')
-  //       .download(ticket?.images[0])
-        
-  //       if (error) {
-  //         throw error
-  //       }
-  //       setImageUris(data)
-  //   }
-  //   catch (error) {
-  //     console.log('error', error)
-  //   }
-  // }
+  useEffect(() => {
+    async function fetchImageUris() {
+      try {
+        const { data, error } = await supabase
+          .storage
+          .from('ticket-images')
+          .createSignedUrls(images, 60)
+          
+          if (error) {
+            throw error
+          }
+          setImageUris(data.map(image => image.signedUrl))
+      }
+      catch (error) {
+        console.log('error', error)
+      }
+    }
+    if (images.length > 0){
+      fetchImageUris()
+    }
+  }, [images]) 
 
   async function closeTicket() {
     try {
@@ -117,7 +122,7 @@ export default function TicketByID() {
       console.log('error', error)
     }
     router.replace('/(tabs)')
-  }
+  } 
 
   return (
     <ScrollView>
@@ -153,12 +158,12 @@ export default function TicketByID() {
             <Paragraph>{ticket.description}</Paragraph>
           </>
         ) : <H4>Loading...</H4>}
-        {ticket?.images ? 
-          ticket.images.map((image, index) => {
+        {imageUris ? 
+          imageUris.map((image, index) => {
             return (
-              <XGroup key={index}>
-                <Image source={{ uri: image }} width={200} height={200} />
-              </XGroup>
+              <YGroup flex={1} ai={'center'} key={index}>
+                <Image key={index} source={{ uri: image }} width={360} height={360} />
+              </YGroup>
             )
           })
         : null}

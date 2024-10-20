@@ -62,9 +62,9 @@ export default function Home() {
     <ScrollView refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={fetchTickets} />
     }>
-      <YStack f={1} ai={'stretch'} gap="$2" px="$4" pt="$6" paddingBottom='$zIndex.5' bg="$background">
+      <YStack f={1} ai={'stretch'} gap="$3" px="$4" pt="$6" paddingBottom='$zIndex.1' bg="$background">
         <H2>Tickets</H2>
-        <XGroup>
+        <XGroup pb='$2'>
           <XGroup.Item>
             <Button 
               width="50%" 

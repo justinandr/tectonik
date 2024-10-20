@@ -188,7 +188,7 @@ export default function NewTicket() {
           setFormStatus('submitting')
           submitForm()
         }}
-        pb="$20"
+        pb="$10"
       >
         <H2>New Ticket</H2>
         {locations.length > 1 ?
@@ -227,7 +227,7 @@ export default function NewTicket() {
           </>
         : null}
         <Label htmlFor='color_code'>Priority Level:</Label>
-        <Select value={colorCode} onValueChange={setColorCode} native id='color_code' defaultValue={colorCode}>
+        <Select value={colorCode} onValueChange={setColorCode} native defaultValue={colorCode}>
           <Select.Trigger iconAfter={ChevronDown}>
             <Select.Value placeholder='Select One' />
           </Select.Trigger>
@@ -247,7 +247,7 @@ export default function NewTicket() {
                 {colorOptions.map((option, i) => (
                   <Select.Item index={i} key={option} value={option}>
                     <Select.ItemText>
-                      {option.charAt(0).toUpperCase() + option.slice(1)}  
+                      {option.charAt(0).toUpperCase() + option.slice(1) + ' '}
                       {option === 'green' ? <Circle size={16} color='green' /> : null}
                       {option === 'orange' ? <Circle size={16} color='orange' /> : null}
                       {option === 'red' ? <Circle size={16} color='red' /> : null}
