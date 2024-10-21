@@ -4,6 +4,7 @@ import { supabase } from 'utils/supabase'
 import { Circle, Image as ImageIcon } from '@tamagui/lucide-icons'
 import * as ImagePicker from 'expo-image-picker'
 import { decode } from 'base64-arraybuffer'
+import { useToastController } from '@tamagui/toast'
 import { 
   ScrollView,
   Form, 
@@ -43,6 +44,7 @@ export default function NewTicket() {
   const [description, setDescription] = useState('')
   const [formStatus, setFormStatus] = useState<'off' | 'submitting' | 'submitted'>('off')
   const colorOptions = ['green', 'orange', 'red']
+  const toast = useToastController()
 
   useEffect(() => {
     const fetchUserLocations = async () => {
@@ -126,6 +128,13 @@ export default function NewTicket() {
               console.error('Error uploading image:', error)
               return
             }
+            if (data) {
+              toast.show('Images Uploaded!', {
+                type: 'success',
+                message: 'Viewable in ticket details',
+                duration: 5000,
+              })
+            }
         })
       }
 
@@ -171,6 +180,12 @@ export default function NewTicket() {
         setDescription('')
         setSelectedLocationName('')
         setImages([])
+        toast.show('Ticket Subitted', { 
+          type: 'success',
+          message: 'Images are being uploaded...',
+          duration: 5000,
+          bg: '$background',
+        })
       }
     }
   }, [formStatus]) 

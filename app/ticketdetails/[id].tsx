@@ -3,6 +3,8 @@ import { Circle } from '@tamagui/lucide-icons'
 import { useLocalSearchParams, router } from 'expo-router'
 import { supabase } from 'utils/supabase'
 import { useEffect, useState } from 'react'
+import { Platform } from 'react-native'
+import { StatusBar } from 'expo-status-bar'
 
 type Ticket = {
   id: string;
@@ -126,6 +128,7 @@ export default function TicketByID() {
 
   return (
     <ScrollView>
+      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
       <YStack flex={1} ai={'stretch'} gap="$2" px="$3" pt="$6" pb='$zIndex.4' bg="$background">
         {ticket ? (
           <>
