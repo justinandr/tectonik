@@ -203,7 +203,7 @@ export default function NewTicket() {
           setFormStatus('submitting')
           submitForm()
         }}
-        pb="$10"
+        pb="$20"
       >
         <H2>New Ticket</H2>
         {locations.length > 1 ?
@@ -278,7 +278,7 @@ export default function NewTicket() {
           </Select.Content>
         </Select>
         <Label htmlFor='title'>Title</Label>
-        <Input value={title} onChangeText={text => setTitle(text)} placeholder='Enter title'/>
+        <Input value={title} onChangeText={text => setTitle(text)} placeholder='Enter title' inputMode='text' />
         <Label htmlFor='description'>Description:</Label>
         <TextArea value={description} onChangeText={setDescription} height='$10' placeholder='Enter description'/>
         <Button icon={ImageIcon} onPress={pickImage}>Select Images</Button>
@@ -286,7 +286,7 @@ export default function NewTicket() {
         {images ? images.map((image, i) => {
           return (
             <XGroup.Item key={i}>
-              <Image source={{ uri: image.uri }} width='$6' height='$6' />
+              <Image source={{ uri: image.uri }} width='$8' height='$8' />
             </XGroup.Item>
           )
         }) : null}

@@ -89,18 +89,24 @@ export default function Home() {
             </Button>
           </XGroup.Item>
         </XGroup>
-        <YStack gap="$2">
+        <YStack ai={'center'} gap="$2">
           {tickets.map(ticket => {
             if(ticket.status === 'open' && renderOpenTickets) {
               return (
                 <Link href={`/ticketdetails/${ticket.id}`} key={ticket.id}>
-                  <Card key={ticket.id} elevate bg='$accentBackground'>
+                  <Card key={ticket.id} minWidth={'100%'} elevate bg='$accentBackground'>
                     <Card.Header>
                       <H3>
                       {ticket.location_name + ' - ' + ticket.title + ' '}
-                      {ticket.color_code === 'red' && ticket.status === 'open' ? <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$red10'} /> : null}
-                      {ticket.color_code === 'orange' && ticket.status === 'open' ? <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$orange7'} /> : null}
-                      {ticket.color_code === 'green' && ticket.status === 'open' ? <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$green10'} /> : null}
+                      {ticket.color_code === 'red' && ticket.status === 'open' ? 
+                      <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$red10'} /> 
+                      : null}
+                      {ticket.color_code === 'orange' && ticket.status === 'open' ? 
+                      <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$orange7'} /> 
+                      : null}
+                      {ticket.color_code === 'green' && ticket.status === 'open' ? 
+                      <Circle marginBottom='$1' alignSelf='flex-end' size={'$1'} color={'$green10'} /> 
+                      : null}
                       </H3>
                       <H5>{ new Date(ticket.created_at).toLocaleString('en-us', {
                             weekday: 'long', 
@@ -121,7 +127,7 @@ export default function Home() {
             else if(ticket.status === 'closed' && !renderOpenTickets) {
               return (
                 <Link href={`/ticketdetails/${ticket.id}`} key={ticket.id}>
-                  <Card key={ticket.id} elevate bg='$accentBackground'>
+                  <Card key={ticket.id} minWidth={'100%'} elevate bg='$accentBackground'>
                     <Card.Header>
                       <H3>{ticket.location_name + ' - ' + ticket.title}</H3>
                       <H5>{ new Date(ticket.created_at).toLocaleString('en-us', {
