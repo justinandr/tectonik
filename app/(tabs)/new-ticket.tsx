@@ -5,7 +5,9 @@ import { Circle, Image as ImageIcon } from '@tamagui/lucide-icons'
 import * as ImagePicker from 'expo-image-picker'
 import { decode } from 'base64-arraybuffer'
 import { useToastController } from '@tamagui/toast'
+import { KeyboardAvoidingView, Platform } from 'react-native'
 import { 
+  View,
   ScrollView,
   Form, 
   Spinner,
@@ -191,6 +193,8 @@ export default function NewTicket() {
   }, [formStatus]) 
 
   return (
+    <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} style={{ flex: 1 }}>
+    <View height={'100%'} bg="$background">
     <ScrollView keyboardDismissMode='on-drag'>
       <Form 
         f={1} 
@@ -203,7 +207,6 @@ export default function NewTicket() {
           setFormStatus('submitting')
           submitForm()
         }}
-        pb="$20"
       >
         <H2>New Ticket</H2>
         {locations.length > 1 ?
@@ -296,6 +299,8 @@ export default function NewTicket() {
           <Button icon={formStatus === 'submitting' ? () => <Spinner /> : undefined}>Submit</Button>
         </Form.Trigger>
       </Form>
-    </ScrollView>  
+    </ScrollView> 
+    </View> 
+    </KeyboardAvoidingView>
   )
 }

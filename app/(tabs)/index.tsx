@@ -11,6 +11,7 @@ import {
   YStack,
   ScrollView,
   H5,
+  View,
 } from 'tamagui'
 import { supabase } from 'utils/supabase'
 import { RefreshControl } from 'react-native';
@@ -59,7 +60,8 @@ export default function Home() {
   }
 
   return (
-    <ScrollView refreshControl={
+    <View height={'100%'} bg={'$background'}>
+    <ScrollView height={'100%'} refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={fetchTickets} />
     }>
       <YStack f={1} ai={'stretch'} gap="$3" px="$4" pt="$6" paddingBottom='$zIndex.1' bg="$background">
@@ -153,5 +155,6 @@ export default function Home() {
         </YStack>
       </YStack>
     </ScrollView>
+    </View>
   )
 }
