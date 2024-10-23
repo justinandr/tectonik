@@ -1,6 +1,6 @@
-import { Link, Tabs } from 'expo-router'
-import { Button, useTheme } from 'tamagui'
-import { Atom, House, FilePlus2, Settings, AudioWaveform } from '@tamagui/lucide-icons'
+import { Tabs } from 'expo-router'
+import { useTheme } from 'tamagui'
+import { House, FilePlus2, Settings } from '@tamagui/lucide-icons'
 
 export default function TabLayout() {
   const theme = useTheme()
@@ -8,7 +8,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: theme.red10.val,
+        tabBarActiveTintColor: theme.blue10.val,
         tabBarStyle: {
           backgroundColor: theme.background.val,
           borderTopColor: theme.borderColor.val,
