@@ -1,5 +1,5 @@
 import { ScrollView, YStack, H2, H4, H5, Paragraph, Button, Image, YGroup } from 'tamagui'
-import { Circle } from '@tamagui/lucide-icons'
+import { Circle, Check, NotebookPen, MessageCircle } from '@tamagui/lucide-icons'
 import { useLocalSearchParams, router } from 'expo-router'
 import { supabase } from 'utils/supabase'
 import { useEffect, useState } from 'react'
@@ -170,13 +170,14 @@ export default function TicketByID() {
             )
           })
         : null}
+        <Button icon={MessageCircle}>View Messages</Button>
+        <Button icon={NotebookPen}>Create Report</Button>
         {ticket?.status === 'closed' ? 
           <Button onPress={reopenTicket}>Reopen Ticket</Button>
         : null}
         {ticket?.status === 'open' ? 
-          <Button onPress={closeTicket}>Close Ticket</Button>
+          <Button icon={Check} onPress={closeTicket}>Close Ticket</Button>
         : null}
-        <Button>Create Report</Button>
       </YStack>
     </ScrollView>
   )
